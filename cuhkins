@@ -1,0 +1,49 @@
+
+Training
+python train_v2.py --train_set data/cuhk03_labeled_new_train.csv --image_root ~/triplet-reid/image_root/cuhk03/ --experiment_root ~/triplet-reid/experiments/exptCuhk_1 --initial_checkpoint init/resnet_v1_50.ckpt --batch_p 22 --flip_augment --crop_augment
+
+python train_v2exp3dec.py --train_set data/cuhk03labelled/cuhk03_labeled_new_train.csv --image_root ~/triplet-reid/image_root/cuhk03/ --experiment_root ~/triplet-reid/experiments/aexpsclab50 --initial_checkpoint init/resnet_v1_50.ckpt --batch_p 24 --flip_augment --crop_augment
+
+python train_v2exp3dec.py --train_set image_root/cuhk03/cuhk03_release/cuhk03_detected_classic_train.csv --image_root ~/triplet-reid/image_root/cuhk03/ --experiment_root ~/triplet-reid/experiments/aexpcuhksdet --initial_checkpoint init/resnet_v1_50.ckpt --batch_p 24 --margin 0.5 --flip_augment --crop_augment
+
+
+python trainoriginal-cuhk03.py --train_set data/cuhk03-np/detected_train.csv --image_root ~/triplet-reid/image_root/cuhk03-np/detected/ --experiment_root ~/triplet-reid/experiments/cuhkoriginal/ --initial_checkpoint init/resnet_v1_50.ckpt --flip_augment --crop_augment --resume
+
+python trainoriginal.py --train_set data/duke/dukeMTMC_train.csv --image_root ~/triplet-reid/image_root/Dukemtmc/ --experiment_root ~/triplet-reid/experiments/dukemtmc_orig/ --initial_checkpoint init/resnet_v1_50.ckpt --flip_augment --crop_augment --resume
+
+
+Feature Extraction
+python rjsEmbRec.py --experiment_root ~kajal2/triplet-reid/experiments/exptCuhk_1/ --dataset data/cuhk03_labeled_new_query.csv --filename query_embeddings.h5 --flip_augment --crop_augment five --aggregator mean
+
+
+python rjsEmbRec.py --experiment_root ~kajal2/triplet-reid/experiments/aexpsclab50ori/ --dataset data/cuhk03labelled/cuhk03_labeled_new_gallery.csv --filename test_embeddings.h5 --flip_augment --crop_augment five --aggregator normalized_mean
+
+python rjsEmbRec.py --experiment_root ~kajal2/triplet-reid/experiments/exptCuhk_1/ --dataset data/cuhk03_labeled_new_gallery.csv --filename test_embeddings.h5 --flip_augment --crop_augment five --aggregator mean
+
+
+python embed-cuhk.py --dataset data/cuhk03-np/detected_test.csv --experiment_root ~/triplet-reid/experiments/cuhk1rec/ --filename gallery_embeddings.h5 --flip_augment --crop_augment five --aggregator mean
+python embed-cuhk.py --dataset data/cuhk03-np/detected_query.csv --experiment_root ~/triplet-reid/experiments/cuhk1rec/ --filename query_embeddings.h5 --flip_augment --crop_augment five --aggregator mean
+python cuhk-evaluate.py --excluder cuhk03 --query_dataset data/cuhk03-np/detected_query.csv --query_embeddings experiments/cuhk1rec/query_embeddings.h5 --gallery_dataset data/cuhk03-np/detected_test.csv --gallery_embeddings experiments/cuhk1rec/gallery_embeddings.h5 --metric euclidean --batch_size 18
+
+
+Evaluation
+python evaluate.py --excluder cuhk03 --query_dataset data/cuhk03_labeled_new_query.csv --query_embeddings experiments/exptCuhk_1/query_embeddings.h5 --gallery_dataset data/cuhk03_labeled_new_gallery.csv --gallery_embeddings experiments/exptCuhk_1/test_embeddings.h5 --metric euclidean --batch_size 18
+
+
+
+
+python train_v2exp.py --train_set data/market1501_train.csv --image_root ~/triplet-reid/image_root --experiment_root ~/triplet-reid/experiments/exp/ --initial_checkpoint init/resnet_v1_50.ckpt --flip_augment --crop_augment --batch_p 22 --resume
+  974   python rjsEmbRec.py --experiment_root ~kajal2/triplet-reid/experiments/aexpmas/ --dataset data/market1501/market1501_test.csv --filename query_embeddings.h5 --flip_augment --crop_augment five --aggregator normalized_mean
+
+  975  python rjsEmbRec.py --experiment_root ~kajal2/triplet-reid/experiments/exp --dataset data/market1501_query.csv --filename test_embeddings.h5 --flip_augment --crop_augment five --aggregator normalized_mean
+
+  976 python evaluate.py --excluder market1501 --query_dataset data/market1501/market1501_query.csv --query_embeddings /data/home/kajal2/triplet-reid/experiments/aexpmas/test_embeddings.h5 --gallery_dataset data/market1501/market1501_test.csv --gallery_embeddings /data/home/kajal2/triplet-reid/experiments/aexpmas/query_embeddings.h5 --metric euclidean --batch_size 18
+
+
+CUDA_VISIBLE_DEVICES=0 python train.py --train_set data/market1501/market1501_train.csv --image_root ~/triplet-reid/image_root/Market-1501-v15.09.15/ --experiment_root ~/triplet-reid/experiments/market1/ --initial_checkpoint init/resnet_v1_50.ckpt --flip_augment --crop_augment
+
+
+python features.py --experiment_root ~/triplet-reid/exp/ --image_root ~/triplet-reid/image_root/Market-1501-v15.09.15/ --dataset data/market1501/market1501_query.csv --filename test_embeddings.h5 --flip_augment --crop_augment five --aggregator normalized_mean
+ python embed.py --experiment_root ~/triplet-reid/experiments/mkt_2rec/ --dataset data/market1501/market1501_test.csv --filename gallery_embeddings.h5 --flip_augment --crop_augment five --aggregator mean
+
+python evaluate.py --excluder market1501 --query_dataset ~/triplet-reid/data/market1501/market1501_query.csv --query_embeddings ~/triplet-reid/exp/test_embeddings.h5 --gallery_dataset ~/triplet-reid/data/market1501/market1501_test.csv --gallery_embeddings ~/triplet-reid/exp/query_embeddings.h5 --metric euclidean --batch_size 18
